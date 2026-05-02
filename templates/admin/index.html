@@ -1,0 +1,81 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-index-grid">
+  <div id="content-main" class="app-list">
+    {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+  </div>
+
+  <aside id="admin-guide" class="module admin-guide">
+    <h2>Admin qo‘llanma</h2>
+    <p class="quiet">
+      Bu yerda sayt kontentini tez va to‘g‘ri kiritish uchun qisqa yo‘riqnoma.
+      Eng ko‘p ishlatiladigan “Add” tugmalari pastda.
+    </p>
+
+    <div class="admin-guide-actions">
+      <a class="button" href="{% url 'admin:movies_movietype_add' %}">+ Janr (Movie type)</a>
+      <a class="button" href="{% url 'admin:movies_category_add' %}">+ Kategoriya</a>
+      <a class="button" href="{% url 'admin:movies_subcategory_add' %}">+ Subkategoriya</a>
+      <a class="button" href="{% url 'admin:movies_actor_add' %}">+ Actor</a>
+      <a class="button" href="{% url 'admin:movies_director_add' %}">+ Director</a>
+      <a class="button" href="{% url 'admin:movies_movie_add' %}">+ Movie</a>
+      <a class="button" href="{% url 'admin:movies_episode_add' %}">+ Episode</a>
+    </div>
+
+    <details open>
+      <summary>1) Janrlar (MovieType) qo‘shish</summary>
+      <div class="admin-guide-body">
+        <p>Avval “Janr” qo‘shing: Masalan <strong>Shonen</strong>, <strong>Drama</strong>, <strong>Fantasy</strong>.</p>
+        <p>Nom yozsangiz “slug” avtomatik chiqadi.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>2) Kategoriya va Subkategoriya</summary>
+      <div class="admin-guide-body">
+        <p>Kategoriya: Masalan <strong>Anime</strong>, <strong>Serial</strong>.</p>
+        <p>Subkategoriya: Kategoriya ichidagi bo‘limlar (masalan: <strong>O‘zbekcha dub</strong>).</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>3) Actor / Director qo‘shish</summary>
+      <div class="admin-guide-body">
+        <p><strong>Avatar</strong> rasm yuklang (kvadrat rasm yaxshi ko‘rinadi).</p>
+        <p><strong>Gender</strong>, <strong>Role</strong> va <strong>About</strong>ni to‘ldirish tavsiya qilinadi.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>4) Movie qo‘shish (asosiy kontent)</summary>
+      <div class="admin-guide-body">
+        <p><strong>Thumbnail</strong> rasm, <strong>Movie type</strong>, <strong>Categories</strong>, <strong>Actors</strong>, <strong>Directors</strong>ni tanlang.</p>
+        <p><strong>Iframe content</strong> — player kodi bo‘lsa shu yerga qo‘ying.</p>
+        <p><strong>Premyera</strong> kerak bo‘lsa “is_premiere”ni yoqing.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>5) Episode qo‘shish (serial qismlari)</summary>
+      <div class="admin-guide-body">
+        <p>Episode’da <strong>Movie</strong>ni tanlang, <strong>name</strong> kiriting va <strong>iframe_content</strong> qo‘ying.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>6) Review (mijoz sharhlari)</summary>
+      <div class="admin-guide-body">
+        <p>Sharhlar “Reviews” bo‘limida ko‘rinadi. Noto‘g‘ri kontent bo‘lsa o‘chirib yuboring.</p>
+      </div>
+    </details>
+  </aside>
+</div>
+{% endblock %}
+

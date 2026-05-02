@@ -6,7 +6,7 @@ from django.views.generic import ListView, View, DetailView
 from movies.utils import movie_filter
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from django.db.models import Avg, F
 from .models import Movie, Episode
 from django.shortcuts import render, get_object_or_404
 from hitcount.views import HitCountDetailView
@@ -46,6 +46,15 @@ def movie_episode(request, movie_slug, episode_id):
 
     movie = get_object_or_404(Movie, slug=movie_slug)
     episode = get_object_or_404(Episode, id=episode_id)
+
+    if request.user.is_authenticated:
+        from users.models import EpisodeWatch, Profile
+
+        watch, created = EpisodeWatch.objects.get_or_create(user=request.user, episode=episode)
+        if created:
+            Profile.objects.get_or_create(user=request.user)
+            Profile.objects.filter(user=request.user).update(hp=F("hp") + 1)
+
     return render(request, 'movie_episode.html', {'movie': movie, 'episode': episode})
 
 def home_view(request):
@@ -59,7 +68,11 @@ def type_wise_movie_view(request, slug):
     # if hit_count_response.hit_counted:
     #     hits =+ 1
     movie_type = MovieType.objects.get(slug=slug)
-    movies = Movie.objects.filter(movie_type=movie_type, **filter_string)
+    movies = (
+        Movie.objects.filter(movie_type=movie_type, **filter_string)
+        .annotate(avg_rating=Avg("review__rating"))
+        .order_by("-created_at")
+    )
     context = {
         'movies': movies,
         'movie_type': movie_type,
@@ -91,6 +104,15 @@ class MovieDetailsView(HitCountDetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(MovieDetailsView, self).get_context_data(*args, **kwargs)
+
+        if self.request.user.is_authenticated:
+            from users.models import MovieWatch, Profile
+
+            watch, created = MovieWatch.objects.get_or_create(user=self.request.user, movie=kwargs["object"])
+            if created:
+                Profile.objects.get_or_create(user=self.request.user)
+                Profile.objects.filter(user=self.request.user).update(hp=F("hp") + 5)
+
         context['reviews'] = Review.objects.filter(movie=kwargs['object']).order_by('-id')
         context['avg_rating'] = context['reviews'].aggregate(Avg('rating'))['rating__avg']
         return context
@@ -114,6 +136,12 @@ def create_review(request):
                 'message': message
             }
         )
+
+        if created:
+            from users.models import Profile
+
+            Profile.objects.get_or_create(user=user)
+            Profile.objects.filter(user=user).update(hp=F("hp") + 3)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

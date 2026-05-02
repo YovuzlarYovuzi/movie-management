@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/admin-modern.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+      <span class="admin-brand"><span>Ani</span>Class Admin</span>
+    </a>
+  </h1>
+{% endblock %}
+
+{% block nav-global %}
+  <a class="admin-help-pill" href="{% url 'admin:index' %}#admin-guide">
+    <strong>Qo‘llanma</strong>
+  </a>
+{% endblock %}
+
+{% block footer %}
+  <div class="admin-footer">
+    <div class="admin-footer__row">
+      <div class="admin-footer__left">
+        <strong>Tez yordam:</strong>
+        <a href="{% url 'admin:index' %}#admin-guide">Admin qo‘llanma</a>
+        <span class="admin-footer__sep">•</span>
+        <span>Kontent qo‘shish tartibi: MovieType → Category/SubCategory → Actor/Director → Movie → Episode</span>
+      </div>
+      <div class="admin-footer__right">
+        <span class="admin-footer__muted">AniClass</span>
+      </div>
+    </div>
+  </div>
+{% endblock %}

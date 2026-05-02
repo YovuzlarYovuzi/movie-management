@@ -1,0 +1,101 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container my-4">
+  <h3>Shashka (AI bilan)</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="checkers-board" style="width:100%; max-width:480px;">
+        <!-- board will be rendered here -->
+      </div>
+    </div>
+    <div class="col-md-6">
+      <p id="chk-status">Yangi o'yin uchun tugma bosing.</p>
+      <button id="chk-start" class="btn btn-primary">Yangi o'yin</button>
+      <button id="chk-reset" class="btn btn-secondary">Reset</button>
+      <pre id="chk-log" style="max-height:300px; overflow:auto;"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+const startUrl = '{% url "checkers_start" %}';
+const moveUrl = '{% url "checkers_move" %}';
+let board = null; // 2d array
+let selected = null;
+
+function renderBoard(b){
+  const container = document.getElementById('checkers-board');
+  container.innerHTML = '';
+  const table = document.createElement('table');
+  table.style.borderCollapse = 'collapse';
+  table.style.width = '100%';
+  for(let r=0;r<8;r++){
+    const tr = document.createElement('tr');
+    for(let c=0;c<8;c++){
+      const td = document.createElement('td');
+      td.style.width = td.style.height = '60px';
+      td.style.textAlign = 'center';
+      td.style.verticalAlign = 'middle';
+      td.style.fontSize = '24px';
+      if((r+c)%2===0){ td.style.background='#eee'; } else { td.style.background='#444'; td.style.color='#fff'; }
+      td.dataset.r = r; td.dataset.c = c;
+      const p = b[r][c];
+      if(p==='.'){ td.textContent = ''; }
+      else if(p==='r'){ td.textContent='⛀'; }
+      else if(p==='R'){ td.textContent='⛂'; }
+      else if(p==='b'){ td.textContent='⛂'; td.style.color='#ffd'; }
+      else if(p==='B'){ td.textContent='⛃'; td.style.color='#ffd'; }
+      td.addEventListener('click', onCellClick);
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  container.appendChild(table);
+}
+
+function log(msg){
+  const el = document.getElementById('chk-log');
+  el.textContent = msg + '\n' + el.textContent;
+}
+
+async function postJson(url, body){
+  const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'}, body: JSON.stringify(body)});
+  return res.json();
+}
+
+function onCellClick(e){
+  const r = parseInt(e.currentTarget.dataset.r);
+  const c = parseInt(e.currentTarget.dataset.c);
+  if(!selected){
+    if(board[r][c] !== '.'){
+      selected = [r,c];
+      e.currentTarget.style.outline = '3px solid yellow';
+    }
+  } else {
+    const mv = {from:selected, to:[r,c]};
+    // send to server
+    postJson(moveUrl, {move: mv}).then(rsp=>{
+      if(!rsp.ok){ log('Move rejected: '+(rsp.error||'unknown')); return; }
+      board = rsp.board;
+      renderBoard(board);
+      if(rsp.ai_move){ log('AI moved'); }
+    }).catch(e=>{ log('Network error '+e); });
+    // clear selection
+    const prev = document.querySelector('td[style*="outline"]');
+    if(prev) prev.style.outline='';
+    selected = null;
+  }
+}
+
+document.getElementById('chk-start').addEventListener('click', async ()=>{
+  const r = await postJson(startUrl, {});
+  if(!r.ok){ alert('Start failed'); return }
+  board = r.board;
+  renderBoard(board);
+  document.getElementById('chk-status').textContent = 'O\'yin boshlandi';
+});
+
+document.getElementById('chk-reset').addEventListener('click', ()=>{ selected=null; board=null; renderBoard([['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.'],['.','.','.','.','.','.','.','.']]); document.getElementById('chk-status').textContent=''; });
+
+</script>
+{% endblock %}

@@ -4,16 +4,18 @@
 
 {% block content %}
 
-<div class="row mt-5">
-  <div class="col-lg-2">
+<div class="row pt-4 g-4">
+  <div class="col-lg-3 col-xl-2">
     {% include 'includes/sidebar-filter.html' %}
   </div>
-  <div class="col-lg-10">
+  <div class="col-lg-9 col-xl-10">
     
-    <h5 class="mb-3">{{ movie_type.name }}</h5>
-    <div class="row">
-      {% include 'includes/movie-grid.html' with movies=movies %}
+    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+      <h4 class="mb-0">{{ movie_type.name }}</h4>
+      <a class="btn btn-surface btn-sm" href="{% url 'index' %}">Bosh sahifa</a>
     </div>
+
+    {% include 'includes/movie-grid.html' with movies=movies %}
   </div>
 </div>
 

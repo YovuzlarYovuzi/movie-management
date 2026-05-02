@@ -1,0 +1,41 @@
+{% if premiere_movies %}
+  <div id="premiereCarousel" class="carousel slide premiere-carousel" data-bs-ride="carousel" data-bs-interval="3500" data-bs-pause="hover">
+    <div class="carousel-indicators">
+      {% for movie in premiere_movies %}
+        <button type="button" data-bs-target="#premiereCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+      {% endfor %}
+    </div>
+
+    <div class="carousel-inner">
+      {% for movie in premiere_movies %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <a class="premiere-slide" href="{% url 'movie_details' movie.slug %}">
+            <img class="premiere-slide__img" src="{{ movie.thumbnail.url }}" alt="{{ movie.name }}">
+            <div class="premiere-slide__overlay"></div>
+            <div class="premiere-slide__content">
+              <div class="premiere-badges">
+                <span class="premiere-badge">Premyera</span>
+                {% if movie.movie_type %}<span class="premiere-badge premiere-badge--muted">{{ movie.movie_type.name }}</span>{% endif %}
+              </div>
+              <div class="premiere-slide__title">{{ movie.name }}</div>
+              <div class="premiere-slide__meta">
+                {% if movie.yili %}<span class="chip">{{ movie.yili }}</span>{% endif %}
+                {% if movie.fasl and movie.fasl != "unknown" %}<span class="chip">{{ movie.fasl }}</span>{% endif %}
+                {% if movie.qism and movie.qism != "unknown" %}<span class="chip">{{ movie.qism }}</span>{% endif %}
+              </div>
+              <span class="btn btn-brand btn-sm">Ko'rish</span>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#premiereCarousel" data-bs-slide="prev" aria-label="Previous">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#premiereCarousel" data-bs-slide="next" aria-label="Next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+{% endif %}
+

@@ -1,0 +1,19 @@
+app = "your-fly-app-name"
+
+[build]
+  image = "registry.fly.io/your-fly-app-name:latest"
+
+[env]
+  SECRET_KEY = "__SECRET_KEY__"
+  DEBUG = "False"
+  DATABASE_URL = "__DATABASE_URL__"
+  REDIS_URL = "__REDIS_URL__"
+  CELERY_BROKER_URL = "__CELERY_BROKER_URL__"
+  CELERY_RESULT_BACKEND = "__CELERY_RESULT_BACKEND__"
+
+[[services]]
+  internal_port = 8000
+  protocol = "tcp"
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80

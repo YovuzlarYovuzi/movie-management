@@ -78,7 +78,7 @@ class MovieType(BaseModel):
 
 class Movie(BaseModel):
     name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='name')
+    slug = AutoSlugField(populate_from='name', editable=True)
     categories = models.ManyToManyField(Category)
     subcategories = models.ManyToManyField(SubCategory, blank=True)
     actors = models.ManyToManyField(Actor)

@@ -1,14 +1,25 @@
 {% extends 'layouts/base.html' %}
 
-
 {% block content %}
 
-
-<div class="text-center mt-5">
-  <h3>Salom, {{ request.user }}</h3>
-  <span>Doyim Aniclass da qoling!</span>
+<div class="container py-4">
+  <div class="panel p-4 p-md-5">
+    <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <h3 class="mb-1" style="font-weight: 800;">Salom, {{ request.user.username }}</h3>
+        <div class="text-muted">AniClass hisobingiz shu yerda.</div>
+      </div>
+      {% if user_profile %}
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <span class="chip chip--brand"><i class="fa fa-bolt"></i> HP {{ user_profile.hp }}</span>
+        <span class="chip"><i class="fa fa-trophy"></i> Battle {{ user_profile.battle_rating }}</span>
+        <span class="chip"><i class="fa fa-flag-checkered"></i> Boss {{ user_profile.boss_progress|add:1 }}</span>
+        <a class="btn btn-surface btn-sm" href="{% url 'leaderboard' %}"><i class="fa fa-trophy"></i> Reyting</a>
+        <a class="btn btn-brand btn-sm" href="{% url 'battle_arena' %}"><i class="fa fa-bolt"></i> Battle</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 {% endblock content %}
-
-

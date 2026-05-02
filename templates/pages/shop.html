@@ -1,0 +1,190 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+      <h3 class="mb-1" style="font-weight: 800; letter-spacing: 0.2px;">
+        <span style="background: linear-gradient(90deg, #00e5ff, #ff2bd6); -webkit-background-clip: text; background-clip: text; color: transparent;">🛒 Shop</span>
+      </h3>
+      <div class="text-muted">Sotib oling - kuchayting</div>
+    </div>
+    <div class="shop-hp-display">
+      <span class="chip chip--brand" style="font-size: 16px; padding: 8px 16px;">
+        <i class="fa fa-bolt"></i> <span id="shop-hp">0</span> HP
+      </span>
+    </div>
+  </div>
+
+  <!-- Shop Items Grid -->
+  <div id="shop-list" class="shop-grid"></div>
+
+  <!-- Upload Avatar -->
+  <div class="panel p-3 p-md-4 mt-4">
+    <div class="panel-header mb-3">📤 Maxsus Avatar Yuklash</div>
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <div class="upload-zone" style="flex: 1; min-width: 200px;">
+        <input type="file" name="avatar" id="avatar-file" accept="image/*" class="form-control" />
+      </div>
+      <button id="upload-btn" class="btn btn-brand">
+        <i class="fa fa-upload"></i> Yuklash
+      </button>
+    </div>
+    <small class="text-muted d-block mt-2">Narxi: 100 HP ⚡️</small>
+  </div>
+</div>
+
+<style>
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+.shop-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 229, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+.shop-item__icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+.shop-item__name {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.shop-item__type {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.shop-item__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.shop-item__price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 16px;
+}
+.shop-item__price .fa-bolt {
+  color: #00e5ff;
+}
+.shop-item__btn {
+  padding: 10px 20px;
+  font-weight: 600;
+}
+@media (max-width: 575.98px) {
+  .shop-grid {
+    grid-template-columns: 1fr;
+  }
+  .shop-item {
+    padding: 16px;
+  }
+  .shop-item__icon {
+    font-size: 32px;
+  }
+}
+</style>
+
+<script>
+async function getJson(url){
+  const res = await fetch(url);
+  return res.json();
+}
+
+async function buy(itemId){
+  const res = await fetch('{% url "shop_buy" %}', {
+    method:'POST', 
+    headers:{'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'}, 
+    body: JSON.stringify({itemId})
+  });
+  const j = await res.json();
+  if(j.success){
+    alert('✅ Muvaffaqiyatli sotib olindi! 🎉');
+  } else {
+    alert('❌ Xatolik: ' + (j.error || 'HP yetarli emas'));
+  }
+  load();
+}
+
+async function load(){
+  const data = await getJson('{% url "shop_items" %}');
+  document.getElementById('shop-hp').textContent = data.hp;
+  const list = document.getElementById('shop-list');
+  list.innerHTML = '';
+  
+  const typeIcons = {
+    'avatar': '🖼️',
+    'premium': '⭐️',
+    'skin': '🎮',
+    'skill': '⚡️',
+    'default': '🎁'
+  };
+  
+  data.items.forEach(i=>{
+    const icon = typeIcons[i.type] || typeIcons['default'];
+    const typeLabel = i.type === 'avatar' ? 'Avatar' : i.type === 'premium' ? 'Premium' : i.type === 'skin' ? 'Skin' : i.type === 'skill' ? 'Skill' : 'Item';
+    
+    const el = document.createElement('div');
+    el.className = 'shop-item';
+    el.innerHTML = `
+      <div class="shop-item__icon">${icon}</div>
+      <div class="shop-item__name">${i.name}</div>
+      <div class="shop-item__type">${typeLabel}</div>
+      <div class="shop-item__footer">
+        <div class="shop-item__price">
+          <i class="fa fa-bolt"></i> ${i.cost}
+        </div>
+        <button class="btn btn-brand shop-item__btn" onclick="buy('${i.id}')">
+          🛒 Sotib olish
+        </button>
+      </div>
+    `;
+    list.appendChild(el);
+  })
+  
+  if(data.items.length === 0){
+    list.innerHTML = '<div class="text-muted text-center py-4">Hozircha mahsulot yo\'q</div>';
+  }
+}
+
+load();
+
+document.getElementById('upload-btn').addEventListener('click', async ()=>{
+  const f = document.getElementById('avatar-file').files[0];
+  if(!f){ alert('Iltimos, rasm tanlang 🖼️'); return }
+  const fd = new FormData(); 
+  fd.append('avatar', f); 
+  fd.append('cost', '100');
+  const res = await fetch('{% url "shop_upload_avatar" %}', {
+    method:'POST', 
+    headers: {'X-CSRFToken': '{{ csrf_token }}'}, 
+    body: fd
+  });
+  const j = await res.json();
+  if(j.success){
+    alert('✅ Avatar muvaffaqiyatli yuklandi! 🎨');
+  } else {
+    alert('❌ Xatolik: ' + (j.error || 'HP yetarli emas'));
+  }
+  load();
+})
+</script>
+{% endblock %}

@@ -3,186 +3,74 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Aniclac</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/raty/2.9.0/jquery.raty.min.css">
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/ea9bd22eef.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/jquery.raty.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern.css' %}">
+    <script>
+      (function () {
+        try {
+          if (!sessionStorage.getItem("aniloader_shown")) {
+            document.documentElement.classList.add("show-loader");
+          }
+        } catch (e) {
+          document.documentElement.classList.add("show-loader");
+        }
+      })();
+    </script>
   </head>
-  <style>
-
-      .site-footer
-{
-  background-color:#26272b;
-  padding:45px 0 20px;
-  font-size:15px;
-  line-height:24px;
-  color:#737373;
-}
-.site-footer hr
-{
-  border-top-color:#bbb;
-  opacity:0.5
-}
-.site-footer hr.small
-{
-  margin:20px 0
-}
-.site-footer h6
-{
-  color:#fff;
-  font-size:16px;
-  text-transform:uppercase;
-  margin-top:5px;
-  letter-spacing:2px
-}
-.site-footer a
-{
-  color:#737373;
-}
-.site-footer a:hover
-{
-  color:#3366cc;
-  text-decoration:none;
-}
-.footer-links
-{
-  padding-left:0;
-  list-style:none
-}
-.footer-links li
-{
-  display:block
-}
-.footer-links a
-{
-  color:#737373
-}
-.footer-links a:active,.footer-links a:focus,.footer-links a:hover
-{
-  color:#3366cc;
-  text-decoration:none;
-}
-.footer-links.inline li
-{
-  display:inline-block
-}
-.site-footer .social-icons
-{
-  text-align:right
-}
-.site-footer .social-icons a
-{
-  width:40px;
-  height:40px;
-  line-height:40px;
-  margin-left:6px;
-  margin-right:0;
-  border-radius:100%;
-  background-color:#33353d
-}
-.copyright-text
-{
-  margin:0
-}
-@media (max-width:991px)
-{
-  .site-footer [class^=col-]
-  {
-    margin-bottom:30px
-  }
-}
-@media (max-width:767px)
-{
-  .site-footer
-  {
-    padding-bottom:0
-  }
-  .site-footer .copyright-text,.site-footer .social-icons
-  {
-    text-align:center
-  }
-}
-.social-icons
-{
-  padding-left:0;
-  margin-bottom:0;
-  list-style:none
-}
-.social-icons li
-{
-  display:inline-block;
-  margin-bottom:4px
-}
-.social-icons li.title
-{
-  margin-right:15px;
-  text-transform:uppercase;
-  color:#96a2b2;
-  font-weight:700;
-  font-size:13px
-}
-.social-icons a{
-  background-color:#eceeef;
-  color:#818a91;
-  font-size:16px;
-  display:inline-block;
-  line-height:44px;
-  width:44px;
-  height:44px;
-  text-align:center;
-  margin-right:8px;
-  border-radius:100%;
-  -webkit-transition:all .2s linear;
-  -o-transition:all .2s linear;
-  transition:all .2s linear
-}
-.social-icons a:active,.social-icons a:focus,.social-icons a:hover
-{
-  color:#fff;
-  background-color:#29aafe
-}
-.social-icons.size-sm a
-{
-  line-height:34px;
-  height:34px;
-  width:34px;
-  font-size:14px
-}
-.social-icons a.facebook:hover
-{
-  background-color:#3b5998
-}
-.social-icons a.twitter:hover
-{
-  background-color:#00aced
-}
-.social-icons a.linkedin:hover
-{
-  background-color:#007bb6
-}
-.social-icons a.dribbble:hover
-{
-  background-color:#ea4c89
-}
-@media (max-width:767px)
-{
-  .social-icons li.title
-  {
-    display:block;
-    margin-right:0;
-    font-weight:600
-  }
-}
-  </style>
   <body>
+    <div id="page-loader" class="page-loader" role="status" aria-live="polite" aria-label="Loading" aria-hidden="true">
+      <div class="page-loader__stage">
+        <svg class="page-loader__art" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="loaderSlash" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0" />
+              <stop offset="35%" stop-color="#00e5ff" stop-opacity="0.65" />
+              <stop offset="65%" stop-color="#ff2bd6" stop-opacity="0.65" />
+              <stop offset="100%" stop-color="#ff2bd6" stop-opacity="0" />
+            </linearGradient>
+            <filter id="loaderGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <path d="M44 186 C80 172, 160 172, 196 186" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="6" stroke-linecap="round" />
+
+          <g class="loader-fighter">
+            <circle cx="96" cy="88" r="18" fill="rgba(255,255,255,0.85)" />
+            <path d="M84 106 C86 132, 76 146, 62 164 C58 170, 62 178, 70 178 L120 178 C132 178, 140 170, 132 160 C120 142, 116 130, 110 108 Z"
+              fill="rgba(255,255,255,0.80)" />
+            <path d="M116 118 C142 116, 160 124, 174 138" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="10" stroke-linecap="round" />
+
+            <g class="loader-sword">
+              <path d="M166 132 L212 92" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="6" stroke-linecap="round" />
+              <path d="M160 138 L170 128" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="10" stroke-linecap="round" />
+            </g>
+          </g>
+
+          <path class="loader-slash" d="M64 152 L212 72" fill="none" stroke="url(#loaderSlash)" stroke-width="10" stroke-linecap="round" filter="url(#loaderGlow)" />
+          <path class="loader-slash loader-slash--thin" d="M72 164 L214 86" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" filter="url(#loaderGlow)" />
+        </svg>
+
+        <div class="page-loader__text">
+          <div class="page-loader__title">AniClass</div>
+          <div class="page-loader__subtitle">Yuklanmoqda…</div>
+        </div>
+      </div>
+    </div>
+
     {% block navbar %}
       {% include 'includes/navigation.html' %}
     {% endblock navbar %}
@@ -193,17 +81,16 @@
 
 
       {% block content %}     {% endblock content %}
-<!--FOOTER-->
-  <!-- Site footer -->
-
-
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/raty/2.9.0/jquery.raty.min.js"></script>
+    {% block footer %}
+      {% include 'includes/footer.html' %}
+    {% endblock footer %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="{% static 'js/jquery.raty.js' %}"></script>
+    <script src="{% static 'js/loader.js' %}"></script>
     {% block extra_js %}{% endblock extra_js %}
 
   </body>

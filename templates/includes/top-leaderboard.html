@@ -1,0 +1,17 @@
+{% if profiles %}
+  <div class="leaderboard-list">
+    {% for p in profiles %}
+      <div class="leaderboard-row">
+        <span class="rank">{{ forloop.counter }}</span>
+        <span class="name">{{ p.user.username }}</span>
+        <div class="stats">
+          <span class="stat"><i class="fa fa-trophy"></i> {{ p.battle_rating }}</span>
+          <span class="stat">Boss {{ p.boss_progress|add:1 }}</span>
+          <span class="stat hp"><i class="fa fa-bolt"></i> {{ p.hp }}</span>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="text-muted">Hali reyting yo'q</div>
+{% endif %}

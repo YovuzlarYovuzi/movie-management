@@ -1,0 +1,382 @@
+:root {
+  --admin-brandA: #00e5ff;
+  --admin-brandB: #ff2bd6;
+  --admin-radius: 14px;
+  --admin-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+}
+
+/* Admin theme via Django CSS variables */
+html[data-theme="dark"] {
+  --primary: #7bdff2;
+  --secondary: rgba(10, 12, 18, 0.75);
+  --accent: #ff2bd6;
+  --primary-fg: rgba(8, 14, 18, 0.95);
+
+  --body-fg: rgba(255, 255, 255, 0.92);
+  --body-bg: rgba(8, 10, 16, 1);
+  --body-quiet-color: rgba(255, 255, 255, 0.62);
+  --body-medium-color: rgba(255, 255, 255, 0.72);
+  --body-loud-color: #fff;
+
+  --header-color: rgba(255, 255, 255, 0.85);
+  --header-branding-color: #fff;
+  --header-bg: rgba(10, 12, 18, 0.62);
+  --header-link-color: rgba(255, 255, 255, 0.88);
+
+  --breadcrumbs-fg: rgba(255, 255, 255, 0.65);
+  --breadcrumbs-link-fg: rgba(255, 255, 255, 0.82);
+  --breadcrumbs-bg: transparent;
+
+  --link-fg: rgba(255, 255, 255, 0.86);
+  --link-hover-color: #fff;
+  --link-selected-fg: #fff;
+
+  --hairline-color: rgba(255, 255, 255, 0.10);
+  --border-color: rgba(255, 255, 255, 0.14);
+
+  --darkened-bg: rgba(255, 255, 255, 0.06);
+  --selected-bg: rgba(255, 255, 255, 0.10);
+  --selected-row: rgba(0, 229, 255, 0.14);
+
+  --button-fg: rgba(8, 14, 18, 0.96);
+  --button-bg: linear-gradient(90deg, var(--admin-brandA), var(--admin-brandB));
+  --button-hover-bg: linear-gradient(90deg, rgba(0, 229, 255, 0.92), rgba(255, 43, 214, 0.92));
+  --default-button-bg: var(--button-bg);
+  --default-button-hover-bg: var(--button-hover-bg);
+
+  --close-button-bg: rgba(255, 255, 255, 0.12);
+  --close-button-hover-bg: rgba(255, 255, 255, 0.16);
+  --delete-button-bg: #ba2121;
+  --delete-button-hover-bg: #a41515;
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="auto"] {
+    --primary: #7bdff2;
+    --secondary: rgba(10, 12, 18, 0.75);
+    --accent: #ff2bd6;
+    --primary-fg: rgba(8, 14, 18, 0.95);
+
+    --body-fg: rgba(255, 255, 255, 0.92);
+    --body-bg: rgba(8, 10, 16, 1);
+    --body-quiet-color: rgba(255, 255, 255, 0.62);
+    --body-medium-color: rgba(255, 255, 255, 0.72);
+    --body-loud-color: #fff;
+
+    --header-color: rgba(255, 255, 255, 0.85);
+    --header-branding-color: #fff;
+    --header-bg: rgba(10, 12, 18, 0.62);
+    --header-link-color: rgba(255, 255, 255, 0.88);
+
+    --breadcrumbs-fg: rgba(255, 255, 255, 0.65);
+    --breadcrumbs-link-fg: rgba(255, 255, 255, 0.82);
+    --breadcrumbs-bg: transparent;
+
+    --link-fg: rgba(255, 255, 255, 0.86);
+    --link-hover-color: #fff;
+    --link-selected-fg: #fff;
+
+    --hairline-color: rgba(255, 255, 255, 0.10);
+    --border-color: rgba(255, 255, 255, 0.14);
+
+    --darkened-bg: rgba(255, 255, 255, 0.06);
+    --selected-bg: rgba(255, 255, 255, 0.10);
+    --selected-row: rgba(0, 229, 255, 0.14);
+
+    --button-fg: rgba(8, 14, 18, 0.96);
+    --button-bg: linear-gradient(90deg, var(--admin-brandA), var(--admin-brandB));
+    --button-hover-bg: linear-gradient(90deg, rgba(0, 229, 255, 0.92), rgba(255, 43, 214, 0.92));
+    --default-button-bg: var(--button-bg);
+    --default-button-hover-bg: var(--button-hover-bg);
+
+    --close-button-bg: rgba(255, 255, 255, 0.12);
+    --close-button-hover-bg: rgba(255, 255, 255, 0.16);
+    --delete-button-bg: #ba2121;
+    --delete-button-hover-bg: #a41515;
+
+    color-scheme: dark;
+  }
+}
+
+html[data-theme="light"] {
+  --primary: #417690;
+  --secondary: rgba(255, 255, 255, 0.82);
+  --accent: #ff2bd6;
+  --primary-fg: #fff;
+
+  --body-fg: rgba(16, 18, 26, 0.92);
+  --body-bg: #f7f9ff;
+  --body-quiet-color: rgba(16, 18, 26, 0.60);
+  --body-medium-color: rgba(16, 18, 26, 0.72);
+  --body-loud-color: #0f1220;
+
+  --header-color: rgba(16, 18, 26, 0.82);
+  --header-branding-color: rgba(16, 18, 26, 0.92);
+  --header-bg: rgba(255, 255, 255, 0.72);
+  --header-link-color: rgba(16, 18, 26, 0.84);
+
+  --breadcrumbs-fg: rgba(16, 18, 26, 0.62);
+  --breadcrumbs-link-fg: rgba(16, 18, 26, 0.76);
+  --breadcrumbs-bg: transparent;
+
+  --link-fg: rgba(16, 18, 26, 0.82);
+  --link-hover-color: rgba(16, 18, 26, 0.92);
+  --link-selected-fg: rgba(16, 18, 26, 0.92);
+
+  --hairline-color: rgba(16, 18, 26, 0.10);
+  --border-color: rgba(16, 18, 26, 0.12);
+
+  --darkened-bg: rgba(16, 18, 26, 0.04);
+  --selected-bg: rgba(16, 18, 26, 0.06);
+  --selected-row: rgba(0, 229, 255, 0.14);
+
+  --button-fg: #061018;
+  --button-bg: linear-gradient(90deg, rgba(0, 229, 255, 0.90), rgba(255, 43, 214, 0.90));
+  --button-hover-bg: linear-gradient(90deg, rgba(0, 229, 255, 1), rgba(255, 43, 214, 1));
+  --default-button-bg: var(--button-bg);
+  --default-button-hover-bg: var(--button-hover-bg);
+
+  --close-button-bg: rgba(16, 18, 26, 0.08);
+  --close-button-hover-bg: rgba(16, 18, 26, 0.12);
+  --delete-button-bg: #ba2121;
+  --delete-button-hover-bg: #a41515;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  html[data-theme="auto"] {
+    --primary: #417690;
+    --secondary: rgba(255, 255, 255, 0.82);
+    --accent: #ff2bd6;
+    --primary-fg: #fff;
+
+    --body-fg: rgba(16, 18, 26, 0.92);
+    --body-bg: #f7f9ff;
+    --body-quiet-color: rgba(16, 18, 26, 0.60);
+    --body-medium-color: rgba(16, 18, 26, 0.72);
+    --body-loud-color: #0f1220;
+
+    --header-color: rgba(16, 18, 26, 0.82);
+    --header-branding-color: rgba(16, 18, 26, 0.92);
+    --header-bg: rgba(255, 255, 255, 0.72);
+    --header-link-color: rgba(16, 18, 26, 0.84);
+
+    --breadcrumbs-fg: rgba(16, 18, 26, 0.62);
+    --breadcrumbs-link-fg: rgba(16, 18, 26, 0.76);
+    --breadcrumbs-bg: transparent;
+
+    --link-fg: rgba(16, 18, 26, 0.82);
+    --link-hover-color: rgba(16, 18, 26, 0.92);
+    --link-selected-fg: rgba(16, 18, 26, 0.92);
+
+    --hairline-color: rgba(16, 18, 26, 0.10);
+    --border-color: rgba(16, 18, 26, 0.12);
+
+    --darkened-bg: rgba(16, 18, 26, 0.04);
+    --selected-bg: rgba(16, 18, 26, 0.06);
+    --selected-row: rgba(0, 229, 255, 0.14);
+
+    --button-fg: #061018;
+    --button-bg: linear-gradient(90deg, rgba(0, 229, 255, 0.90), rgba(255, 43, 214, 0.90));
+    --button-hover-bg: linear-gradient(90deg, rgba(0, 229, 255, 1), rgba(255, 43, 214, 1));
+    --default-button-bg: var(--button-bg);
+    --default-button-hover-bg: var(--button-hover-bg);
+
+    --close-button-bg: rgba(16, 18, 26, 0.08);
+    --close-button-hover-bg: rgba(16, 18, 26, 0.12);
+    --delete-button-bg: #ba2121;
+    --delete-button-hover-bg: #a41515;
+
+    color-scheme: light;
+  }
+}
+
+body {
+  background:
+    radial-gradient(900px 600px at 15% 10%, rgba(0, 229, 255, 0.10), transparent 60%),
+    radial-gradient(800px 600px at 85% 20%, rgba(255, 43, 214, 0.10), transparent 60%),
+    linear-gradient(180deg, var(--body-bg), var(--body-bg));
+}
+
+#container {
+  background: transparent;
+}
+
+#content {
+  padding-top: 18px;
+}
+
+#header {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.admin-brand {
+  font-weight: 900;
+  letter-spacing: 0.4px;
+}
+.admin-brand span {
+  background: linear-gradient(90deg, var(--admin-brandA), var(--admin-brandB));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+div.breadcrumbs {
+  background: transparent;
+}
+
+.module,
+.inline-group,
+fieldset,
+.submit-row,
+.object-tools a {
+  border-radius: var(--admin-radius);
+}
+
+.module,
+.inline-group,
+fieldset {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--hairline-color);
+  box-shadow: var(--admin-shadow);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: transparent;
+  border-bottom: 1px solid var(--hairline-color);
+}
+
+/* Nav sidebar */
+#nav-sidebar,
+.toggle-nav-sidebar {
+  background-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+#nav-sidebar {
+  border-right: 1px solid var(--hairline-color);
+}
+.toggle-nav-sidebar {
+  border-right: 1px solid var(--hairline-color);
+}
+#nav-filter {
+  border-radius: 10px;
+}
+
+/* Inputs: slightly larger, comfy */
+input[type=text], input[type=password], input[type=email], input[type=url], input[type=number],
+textarea, select {
+  border-radius: 12px !important;
+}
+
+/* Labels / rows */
+.form-row {
+  border-bottom: 1px solid var(--hairline-color);
+}
+.aligned label {
+  font-weight: 700;
+}
+
+/* Simplify: hide "Recent actions" */
+#recent-actions-module { display: none; }
+
+/* Guide blocks */
+.admin-help-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-color);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.admin-guide details {
+  border: 1px solid var(--hairline-color);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 10px 0;
+}
+.admin-guide details[open] {
+  background: rgba(255, 255, 255, 0.06);
+}
+.admin-guide summary {
+  font-weight: 800;
+}
+
+.admin-index-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 1024px) {
+  .admin-index-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-guide {
+  padding: 14px;
+}
+
+.admin-guide .quiet {
+  color: var(--body-quiet-color);
+}
+
+.admin-guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 6px;
+}
+
+.admin-guide-actions .button {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.admin-guide-body {
+  padding: 6px 2px 2px;
+}
+
+/* Footer */
+.admin-footer {
+  padding: 12px 40px;
+  border-top: 1px solid var(--hairline-color);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.admin-footer__row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: var(--body-quiet-color);
+  font-size: 12px;
+}
+.admin-footer a {
+  color: var(--link-fg);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--hairline-color);
+}
+.admin-footer a:hover {
+  color: var(--link-hover-color);
+  border-bottom-color: transparent;
+}
+.admin-footer__sep {
+  opacity: 0.6;
+  margin: 0 6px;
+}
+.admin-footer__muted {
+  opacity: 0.75;
+}

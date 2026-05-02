@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4 battle-page">
+  <div id="battle-loader" class="battle-loader" style="display:grid">
+    <div class="battle-loader__card">
+      <div class="battle-loader__title">Loading Battle</div>
+      <div class="battle-loader__slash" aria-hidden="true"></div>
+      <div class="battle-loader__bar">
+        <div id="battle-loader-bar" class="battle-loader__barFill"></div>
+      </div>
+      <div id="battle-loader-text" class="battle-loader__text">Loading...</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+      <h3 class="mb-1" style="font-weight: 900; letter-spacing: 0.2px;">Battle Arena</h3>
+      <div class="text-muted">
+        PC: A/D yurish - W sakrash - Space baland sakrash - S block - Ctrl roll - Chap klik attack - O'ng klik skill.
+        Mobil: ekrandagi tugmalar bilan boshqariladi.
+      </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <span class="chip chip--brand">
+        <i class="fa fa-trophy"></i>
+        <span id="battle-rating">...</span>
+      </span>
+      <span class="chip">
+        <i class="fa fa-flag-checkered"></i>
+        Boss <span id="boss-progress">...</span>
+      </span>
+      <a class="btn btn-surface btn-sm" href="{% url 'mortal_kombat_arena' %}">
+        <i class="fa fa-gamepad"></i> MK Arcade
+      </a>
+    </div>
+  </div>
+
+  <div class="panel p-3 p-md-4">
+    <form style="display:none">{% csrf_token %}</form>
+    <div id="battle-mount" class="battle-mount" data-is-mobile="{% if is_mobile %}1{% else %}0{% endif %}"></div>
+
+    <div class="battle-help mt-3">
+      <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+        <div class="text-muted">
+          PC bonus: +20% HP reward va +5% damage
+        </div>
+        <a class="btn btn-surface btn-sm" href="{% url 'profile' %}">
+          <i class="fa fa-user"></i> Profil
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+  <link rel="stylesheet" href="{% static 'css/game.css' %}?v=12">
+  <meta name="static-base" content="{% static '' %}">
+  <script>
+    window.__BATTLE_ENV = window.__BATTLE_ENV || {};
+    // Server-provided flag: if `battle_disabled` context is true, client will block entering battle.
+    window.__BATTLE_ENV.battleDisabled = {{ battle_disabled|default_if_none:False|yesno:"true,false" }};
+    window.__USER_AUTHENTICATED = {{ request.user.is_authenticated|yesno:"true,false" }};
+  </script>
+  <script src="{% static 'js/vendor/phaser-3.80.1.min.js' %}?v=12"></script>
+  <script src="{% static 'js/scenes/BootScene.js' %}?v=12"></script>
+  <script src="{% static 'js/scenes/MenuScene.js' %}?v=12"></script>
+  <script src="{% static 'js/scenes/UIScene.js' %}?v=12"></script>
+  <script src="{% static 'js/scenes/BattleScene.js' %}?v=12"></script>
+  <script src="{% static 'js/game.js' %}?v=12"></script>
+{% endblock extra_js %}

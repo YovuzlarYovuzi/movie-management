@@ -1,0 +1,102 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container my-4">
+  <h3>Shahmat (AI bilan)</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="board" style="width: 100%; max-width: 480px;"></div>
+    </div>
+    <div class="col-md-6">
+      <p id="game-status">Boshlash uchun "Yangi o'yin" tugmasini bosing.</p>
+      <button id="chess-start" class="btn btn-primary mb-2">Yangi o'yin</button>
+      <button id="chess-resign" class="btn btn-danger mb-2">Taslim bo'lish</button>
+      <pre id="chess-log" style="max-height:300px; overflow:auto;"></pre>
+    </div>
+  </div>
+</div>
+
+<!-- Chessboard + chess.js from CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/css/chessboard-1.0.0.min.css" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/js/chessboard-1.0.0.min.js"></script>
+
+<script>
+const startUrl = '{% url "chess_start" %}';
+const moveUrl = '{% url "chess_move" %}';
+
+let board = null;
+let game = null; // chess.js game for client-side display
+
+function log(msg){
+  const el = document.getElementById('chess-log');
+  el.textContent = msg + "\n" + el.textContent;
+}
+
+async function postJson(url, body){
+  const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': '{{ csrf_token }}'}, body: JSON.stringify(body)});
+  return res.json();
+}
+
+function onDrop(source, target, piece, newPos, oldPos, orientation){
+  // try local move first
+  const moveObj = { from: source, to: target };
+  const move = game.move(moveObj);
+  if (move === null){
+    return 'snapback';
+  }
+
+  // send move to server in UCI format
+  const uci = source + target + (move.promotion ? move.promotion : '');
+  postJson(moveUrl, {move: uci}).then(r=>{
+    if (!r.ok){
+      log('Server rejected move: ' + (r.error || 'unknown'));
+      // revert via reload
+      board.position(game.fen());
+      return;
+    }
+    // apply server FEN (contains both player and AI moves)
+    if (r.fen){
+      game = new Chess(r.fen);
+      board.position(r.fen);
+    }
+    if (r.last_ai_move) log('AI moved: ' + r.last_ai_move);
+    if (r.game_over) log('Oʻyin tugadi: ' + (r.result || 'natija nomaʼlum'));
+  }).catch(e=>{
+    log('Network error: '+e);
+  });
+
+  return;
+}
+
+function onSnapEnd(){
+  board.position(game.fen());
+}
+
+document.getElementById('chess-start').addEventListener('click', async ()=>{
+  const r = await postJson(startUrl, {});
+  if (!r.ok){
+    log('Start error');
+    return;
+  }
+  game = new Chess(r.fen);
+  if (board) board.destroy();
+  board = Chessboard('board', {
+    draggable: true,
+    position: r.fen,
+    onDrop: onDrop,
+    onSnapEnd: onSnapEnd,
+    pieceTheme: '/static/img/chesspieces/{piece}.png'
+  });
+  log('Yangi o\'yin boshlandi');
+});
+
+document.getElementById('chess-resign').addEventListener('click', ()=>{
+  if (!game) return;
+  log('Siz taslim bo‘ldingiz.');
+  game = null;
+  if (board) board.position('start');
+});
+
+</script>
+
+{% endblock %}

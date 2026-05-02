@@ -11,31 +11,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-import environ
 import os
 from pathlib import Path
 
+import environ
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(DEBUG=(bool, False))
 
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# Prefer `.env` (standard), but keep `env` as a legacy fallback.
+# Also avoid trying to read a venv directory named `env/`.
+for env_path in (BASE_DIR / ".env", BASE_DIR / "env"):
+    if env_path.is_file():
+        environ.Env.read_env(str(env_path))
+        break
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+SECRET_KEY = env.str("SECRET_KEY")
+DEBUG = env.bool("DEBUG", default=False)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,13 +53,17 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'mlw.urls'
@@ -86,6 +84,7 @@ TEMPLATES = [
 
                 # custom
                 'movies.context_processor.movie_context',
+                'users.context_processor.user_context',
             ],
         },
     },
@@ -95,18 +94,21 @@ WSGI_APPLICATION = 'mlw.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Servers_Anime_movie',
-        'USER': 'postgres',
-        'PASSWORD': '1111',
-        'HOST': 'localhost',
-        'PORT': '5432',
+# Prefer `DATABASE_URL` in production (Postgres). Falls back to SQLite for
+# local development when `DATABASE_URL` is not provided.
+# Example `DATABASE_URL`: postgres://USER:PASSWORD@HOST:PORT/NAME
+DATABASE_URL = env.str('DATABASE_URL', default='')
+if DATABASE_URL:
+    DATABASES = {
+        'default': env.db('DATABASE_URL')
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -151,8 +153,39 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
+# Use WhiteNoise to serve compressed static files efficiently
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Toggle site-wide game availability. Set to False to disable Battle Arena for all users.
+GAME_ENABLED = env.bool("GAME_ENABLED", default=False)
+
+# Redis cache / session configuration (use REDIS_URL env, e.g. Upstash)
+REDIS_URL = env.str('REDIS_URL', default='redis://127.0.0.1:6379/0')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        # Default timeout for cache entries (seconds). Can be overridden
+        # using the CACHE_TIMEOUT env var.
+        'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
+    }
+}
+
+# Cache middleware settings
+CACHE_MIDDLEWARE_SECONDS = env.int('CACHE_MIDDLEWARE_SECONDS', default=300)
+CACHE_MIDDLEWARE_KEY_PREFIX = env.str('CACHE_MIDDLEWARE_KEY_PREFIX', default='mlw')
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = env.int('SESSION_COOKIE_AGE', default=1209600)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = env.bool('SESSION_EXPIRE_AT_BROWSER_CLOSE', default=False)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -161,5 +194,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_REDIRECT_URL = '/'
+# Celery / broker configuration
+# Supports RabbitMQ (AMQP) via `CELERY_BROKER_URL` environment variable.
+# Default is local RabbitMQ (guest/guest) for development. In production
+# set `CELERY_BROKER_URL` to e.g. amqp://user:pass@rabbitmq:5672//
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', default='amqp://guest:guest@localhost:5672//')
+
+# Result backend defaults to Redis (existing `REDIS_URL`). If you prefer
+# use RabbitMQ RPC backend set `CELERY_RESULT_BACKEND` accordingly.
+CELERY_RESULT_BACKEND = env.str('CELERY_RESULT_BACKEND', default=REDIS_URL)
+
+# Recommended Celery serialization settings
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
 

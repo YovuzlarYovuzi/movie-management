@@ -1,17 +1,24 @@
-<nav class="navbar navbar-expand-lg navbar-light">
-  <div class="container-fluid">
-    <a class="navbar-brand text-white" href="{% url 'index' %}" style="font-family: 'Comic Sans MS', cursive, sans-serif; font-size: 30px; text-shadow: 2px 2px #ff0000;">AniClass</a>
+{% load static %}
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon">
-        <i class="fa fa-bars"></i>
-      </span>
+<nav class="navbar navbar-expand-lg navbar-dark navbar-glass">
+  <div class="container-fluid">
+    <a class="navbar-brand brand-mark d-flex align-items-center" href="{% url 'index' %}">
+      <span class="brand-text" style="font-weight:600; font-size:1rem; color: #fff;">AniBro</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="#navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link text-white" href="{% url 'index' %}">Bosh Sahifa</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'leaderboard' %}">
+            <i class="fa fa-trophy"></i> Reyting
+          </a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -24,41 +31,61 @@
             </li>
             {% endfor %}
           </ul>
-
         </li>
 
-          <button onclick="toggleDarkMode()" class="btn btn-outline-light">
-  <i class="fa fa-moon-o" id="moon-icon"></i>
-  <i class="fa fa-sun-o" id="sun-icon" style="display: none;"></i>
-</button>
-      </ul>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'battle_arena' %}">
+            <i class="fa fa-bolt"></i> Battle
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'mortal_kombat_arena' %}">
+            <i class="fa fa-fire"></i> Mortal Kombat
+          </a>
+        </li>
+        {% endif %}
 
+        <button onclick="toggleDarkMode()" class="btn btn-surface">
+          <i class="fa fa-moon-o" id="moon-icon"></i>
+          <i class="fa fa-sun-o" id="sun-icon" style="display: none;"></i>
+        </button>
+      </ul>
 
       <form class="d-flex" action="{% url 'index' %}" method="GET">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
-        <button class="btn btn-outline-light" type="submit">Qidiruv</button>
+        <button class="btn btn-brand" type="submit">Qidiruv</button>
       </form>
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        {% if request.user.is_authenticated and user_profile %}
+        <li class="nav-item d-flex align-items-center me-2">
+          <span class="chip chip--brand">
+            <i class="fa fa-bolt"></i> HP {{ user_profile.hp }}
+          </span>
+        </li>
+        {% if user_status %}
+        <li class="nav-item d-flex align-items-center me-2">
+          <span class="chip">
+            <i class="fa fa-shield"></i> {{ user_status }} | Lv {{ user_level }}
+          </span>
+        </li>
+        {% endif %}
+        {% endif %}
 
         {% if not request.user.is_authenticated %}
-       {#teligram qushish#}
-
-
         <li class="nav-item">
-
           <a class="nav-link text-white" href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a>
-
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="{% url 'register' %}"><i class="fa fa-user-plus"></i> Ro'yhatdan O'tish</a>
+          <a class="nav-link text-white" href="{% url 'register' %}"><i class="fa fa-user-plus"></i> Ro'yhatdan o'tish</a>
         </li>
         {% else %}
         <li class="nav-item">
           <a class="nav-link text-white" href="{% url 'profile' %}"><i class="fa fa-user"></i> Hisob</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Chiqb ketish</a>
+          <a class="nav-link text-white" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Chiqish</a>
         </li>
         {% endif %}
       </ul>

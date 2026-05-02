@@ -1,0 +1,36 @@
+{
+  "combinations": [
+    {
+      "action": "UP",
+      "key_strokes": [ 26 ]
+    },
+    {
+      "action": "BCK",
+      "key_strokes": [ 4 ]
+    },
+    {
+      "action": "FWD",
+      "key_strokes": [ 7 ]
+    },
+    {
+      "action": "DOWN",
+      "key_strokes": [ 22 ]
+    },
+    {
+      "action": "BLOCK",
+      "key_strokes": [ 6 ]
+    },
+    {
+      "action": "KICK",
+      "key_strokes": [ 27 ]
+    },
+    {
+      "action": "PUNCH",
+      "key_strokes": [ 29 ]
+    },
+    {
+      "action": "SPECIAL",
+      "key_strokes": [ 20 ]
+    }
+  ]
+}

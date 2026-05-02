@@ -1,0 +1,130 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4 mk-page">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+      <h3 class="mb-1" style="font-weight: 900; letter-spacing: 0.2px;">Mortal Kombat Arcade</h3>
+      <div class="text-muted">
+        A/D yurish - W sakrash - S himoya - J punch - K kick - L special. Mobil qurilmada ekrandagi tugmalar ishlaydi.
+      </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <span class="chip chip--brand">
+        <i class="fa fa-trophy"></i>
+        <span id="mk-rating">...</span>
+      </span>
+      <span class="chip">
+        <i class="fa fa-bolt"></i>
+        HP <span id="mk-hp">...</span>
+      </span>
+      <a class="btn btn-surface btn-sm" href="{% url 'battle_arena' %}">
+        <i class="fa fa-bolt"></i> AniClass Arena
+      </a>
+    </div>
+  </div>
+
+  <div class="panel p-3 p-md-4">
+    <div id="mk-loader" class="battle-loader" style="display:grid">
+      <div class="battle-loader__card">
+        <div class="battle-loader__title">Loading MK Arcade</div>
+        <div class="battle-loader__slash" aria-hidden="true"></div>
+        <div class="battle-loader__bar">
+          <div id="mk-loader-bar" class="battle-loader__barFill"></div>
+        </div>
+        <div id="mk-loader-text" class="battle-loader__text">Loading...</div>
+      </div>
+    </div>
+
+    <form style="display:none">{% csrf_token %}</form>
+    <div
+      id="mk-root"
+      class="mk-root"
+      data-is-mobile="{% if is_mobile %}1{% else %}0{% endif %}"
+    >
+      <canvas id="mk-canvas" class="mk-canvas" width="1280" height="720"></canvas>
+
+      <div id="mk-overlay" class="mk-overlay">
+        <div id="mk-start" class="mk-panel">
+          <div class="mk-panel__eyebrow">Second Game</div>
+          <h4 class="mk-panel__title">Choose your fighter</h4>
+          <div class="mk-panel__actions">
+            <button class="btn btn-brand" type="button" data-fighter="subzero">Play as Subzero</button>
+            <button class="btn btn-surface" type="button" data-fighter="scorpion">Play as Scorpion</button>
+          </div>
+        </div>
+
+        <div id="mk-end" class="mk-panel" hidden>
+          <div id="mk-end-title" class="mk-panel__title">Round complete</div>
+          <div id="mk-end-text" class="text-muted mb-3">Result saved.</div>
+          <div class="mk-panel__actions">
+            <button id="mk-retry" class="btn btn-brand" type="button">Retry</button>
+            <button id="mk-next" class="btn btn-accent" type="button">Next</button>
+            <button id="mk-menu" class="btn btn-surface" type="button">Choose fighter</button>
+            <a class="btn btn-surface" href="{% url 'battle_arena' %}">AniClass Arena</a>
+          </div>
+        </div>
+      </div>
+
+      <div id="mk-mobile-controls" class="mk-mobile-controls" hidden>
+        <div class="mk-mobile-controls__left">
+          <button type="button" data-control="left">Left</button>
+          <button type="button" data-control="right">Right</button>
+          <button type="button" data-control="block">Block</button>
+        </div>
+        <div class="mk-mobile-controls__right">
+          <button type="button" data-action="jump">Jump</button>
+          <button type="button" data-action="punch">Punch</button>
+          <button type="button" data-action="kick">Kick</button>
+          <button type="button" data-action="special">Special</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="battle-help mt-3">
+      <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+        <div class="text-muted">
+          Bu web versiya original desktop loyihasining sprite va audio fayllari bilan ishlaydi.
+        </div>
+        <a class="btn btn-surface btn-sm" href="{% url 'profile' %}">
+          <i class="fa fa-user"></i> Profil
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+  <link rel="stylesheet" href="{% static 'css/game.css' %}?v=13">
+  <meta name="mk-static-base" content="{% static 'assets/mk/' %}">
+  <script>
+    window.__MK_ENV = window.__MK_ENV || {};
+    window.__MK_ENV.disabled = {{ battle_disabled|default_if_none:False|yesno:"true,false" }};
+    window.__USER_AUTHENTICATED = {{ request.user.is_authenticated|yesno:"true,false" }};
+  </script>
+  <script src="{% static 'js/mk-arcade.js' %}?v=13"></script>
+  <script>
+    // If MK is disabled server-side, prevent starting and show a short notice
+    document.addEventListener('DOMContentLoaded', function () {
+      try {
+        const disabled = Boolean(window.__MK_ENV && window.__MK_ENV.disabled === true || window.__MK_ENV.disabled === 'true');
+        if (!disabled) return;
+        const startButtons = document.querySelectorAll('[data-fighter]');
+        startButtons.forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("O'yin hozircha ishlab chiqilmoqda — keyinroq qayta urinib ko'ring.");
+          });
+        });
+        const retry = document.getElementById('mk-retry');
+        const menu = document.getElementById('mk-menu');
+        if (retry) retry.addEventListener('click', (e) => { e.preventDefault(); alert("O'yin hozircha ishlab chiqilmoqda"); });
+        if (menu) menu.addEventListener('click', (e) => { e.preventDefault(); alert("O'yin hozircha ishlab chiqilmoqda"); });
+      } catch (e) {
+        // swallow
+      }
+    });
+  </script>
+{% endblock extra_js %}

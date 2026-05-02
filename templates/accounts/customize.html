@@ -1,0 +1,30 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container my-4">
+  <h3>Profile Customize</h3>
+  <form id="customize-form">
+    <div class="mb-2">
+      <label>Display nickname</label>
+      <input id="display_nickname" class="form-control" />
+    </div>
+    <div class="mb-2">
+      <label>Active skin</label>
+      <input id="active_skin" class="form-control" placeholder="classic or skin id" />
+    </div>
+    <button class="btn btn-primary" type="button" id="customize-save">Save</button>
+  </form>
+</div>
+<script>
+async function postJson(url, body){
+  const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': '{{ csrf_token }}'}, body: JSON.stringify(body)});
+  return res.json();
+}
+
+document.getElementById('customize-save').addEventListener('click', async ()=>{
+  const display_nickname = document.getElementById('display_nickname').value;
+  const active_skin = document.getElementById('active_skin').value;
+  const r = await postJson('{% url "profile_customize" %}', {display_nickname, active_skin});
+  alert(JSON.stringify(r));
+});
+</script>
+{% endblock %}

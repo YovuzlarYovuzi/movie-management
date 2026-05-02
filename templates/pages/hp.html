@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container my-4">
+  <h3>HP Dashboard</h3>
+  <p>HP: <strong>{{ profile.hp }}</strong></p>
+  <p>Level: <strong>{{ profile.level }}</strong> | Experience: <strong>{{ profile.experience }}</strong></p>
+
+  <h5>Recent Episode Watches</h5>
+  <ul>
+    {% for w in recent_episodes %}
+      <li>{{ w.episode.name }} — {{ w.created_at }}</li>
+    {% empty %}
+      <li>No recent episodes watched.</li>
+    {% endfor %}
+  </ul>
+
+  <h5>Recent Movie Watches</h5>
+  <ul>
+    {% for w in recent_movies %}
+      <li>{{ w.movie.name }} — {{ w.created_at }}</li>
+    {% empty %}
+      <li>No recent movies watched.</li>
+    {% endfor %}
+  </ul>
+
+  <h5>Recent Purchases</h5>
+  <ul>
+    {% for p in recent_purchases %}
+      <li>{{ p.item_name }} — {{ p.cost }} {{ p.currency }} — {{ p.created_at }}</li>
+    {% empty %}
+      <li>No purchases yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
