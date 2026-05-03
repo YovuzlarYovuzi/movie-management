@@ -25,20 +25,18 @@ def index(request):
 
 
 def watch_movie(request, movie_id):
-
     movie = Movie.objects.get(id=movie_id)
-    hit_count = get_hitcount_model().objects.ge_for_object(movies)
+    hit_count = get_hitcount_model().objects.get_for_object(movie)
     hits = hit_count.hits
-    hit_count_response = HitCountMixin.hit_count(request,hit_count)
+    hit_count_response = HitCountMixin.hit_count(request, hit_count)
     if hit_count_response.hit_counted:
-        hits =+ 1
+        hits += 1
     movie.increment_view_count()
-    # ... qolgan kodlar ...
     context = {
-        'movies': movies,
+        'movie': movie,
         'hits': hits
     }
-    return render(request, 'pages/movie-details.html', {'movie': movie},context)
+    return render(request, 'pages/movie-details.html', context)
 
 
 
