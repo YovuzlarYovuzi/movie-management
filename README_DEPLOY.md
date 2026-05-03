@@ -64,6 +64,17 @@ Fly.io deploy
 	- `FLY_API_TOKEN` set in GitHub repository secrets
 	- a `fly.toml` in the project root (create with `flyctl launch` locally)
 
+SSH deploy (GitHub Actions)
+- A generic SSH deploy workflow is included at `.github/workflows/deploy-ssh.yml`.
+- Configure these GitHub Actions Secrets in your repository settings (Settings → Secrets → Actions):
+	- `SSH_PRIVATE_KEY` (your private key, without passphrase preferred for automation)
+	- `SSH_HOST` (e.g. `example.com`)
+	- `SSH_USER` (e.g. `deploy`)
+	- `SSH_PATH` (remote path, e.g. `/var/www/movie-management`)
+
+Example: set `SSH_HOST=your.server.com`, `SSH_USER=deploy`, `SSH_PATH=/var/www/movie-management`.
+The workflow will `rsync` the repo to the server and run `migrate` + `collectstatic` and attempt to restart `gunicorn` (adjust as needed).
+
 Running migrations on production (example):
 
 ```bash
