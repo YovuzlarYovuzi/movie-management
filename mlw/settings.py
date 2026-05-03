@@ -172,26 +172,12 @@ GAME_ENABLED = env.bool("GAME_ENABLED", default=False)
 # Redis disabled for prod - use LocMem/DB fallback
 
 
-if REDIS_AVAILABLE:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': REDIS_URL,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            },
-            # Default timeout for cache entries (seconds). Can be overridden
-            # using the CACHE_TIMEOUT env var.
-            'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
-        }
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
     }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
-        }
-    }
+}
 
 # Cache middleware settings
 CACHE_MIDDLEWARE_SECONDS = env.int('CACHE_MIDDLEWARE_SECONDS', default=300)
