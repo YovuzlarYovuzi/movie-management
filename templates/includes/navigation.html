@@ -1,188 +1,94 @@
 {% load static %}
 
-<nav class="navbar modern-navbar fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-glass">
   <div class="container-fluid">
-    <!-- Logo -->
-    <a class="navbar-brand brand-gradient d-flex align-items-center" href="{% url 'index' %}">
-      <i class="fas fa-play-circle brand-icon"></i>
-      <span class="brand-text fw-bold">AniBro</span>
+    <a class="navbar-brand brand-mark d-flex align-items-center" href="{% url 'index' %}">
+      <span class="brand-text" style="font-weight:600; font-size:1rem; color: #fff;">AniBro</span>
     </a>
 
-    <!-- Mobile hamburger -->
-    <button class="navbar-toggler modern-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
-      <i class="fas fa-bars modern-hamburger"></i>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Desktop nav -->
-    <div class="navbar-nav-desktop">
-      <ul class="navbar-nav">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link modern-link" href="{% url 'index' %}">
-            <i class="fas fa-home"></i><span>Bosh</span>
-          </a>
+          <a class="nav-link text-white" href="{% url 'index' %}">Bosh Sahifa</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link modern-link" href="{% url 'leaderboard' %}">
-            <i class="fas fa-trophy"></i><span>Reyting</span>
+          <a class="nav-link text-white" href="{% url 'leaderboard' %}">
+            <i class="fa fa-trophy"></i> Reyting
           </a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link modern-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-            <i class="fas fa-list"></i><span>Janrlar</span>
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-list"></i> Janrlar
           </a>
-          <ul class="dropdown-menu modern-dropdown">
+          <ul class="dropdown-menu">
             {% for movie_type in movie_types %}
-            <li><a class="dropdown-item modern-item" href="{% url 'type_wise_movie' movie_type.slug %}">
-              <i class="fas fa-film"></i> {{ movie_type.name }}
-            </a></li>
-            {% empty %}
-            <li><a class="dropdown-item modern-item"><i class="fas fa-film"></i> Janr yuklanmoqda...</a></li>
+            <li>
+              <a class="dropdown-item" href="{% url 'type_wise_movie' movie_type.slug %}">{{ movie_type.name }}</a>
+            </li>
             {% endfor %}
           </ul>
         </li>
+
         {% if request.user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link modern-link" href="{% url 'battle_arena' %}">
-            <i class="fas fa-bolt"></i><span>Battle</span>
+          <a class="nav-link text-white" href="{% url 'battle_arena' %}">
+            <i class="fa fa-bolt"></i> Battle
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link modern-link" href="{% url 'mortal_kombat_arena' %}">
-            <i class="fas fa-fire"></i><span>MK Arena</span>
+          <a class="nav-link text-white" href="{% url 'mortal_kombat_arena' %}">
+            <i class="fa fa-fire"></i> Mortal Kombat
           </a>
         </li>
         {% endif %}
-      </ul>
-    </div>
 
-    <!-- Search and right side -->
-    <div class="navbar-right">
-      <!-- Search -->
-      <form class="search-form d-flex" action="{% url 'index' %}" method="GET">
-        <div class="search-input-wrapper">
-          <i class="fas fa-search search-icon"></i>
-          <input class="form-control search-input" type="search" placeholder="Kino qidir..." name="search">
-        </div>
-        <button class="btn btn-modern-search" type="submit">
-          <i class="fas fa-magnifying-glass"></i>
+        <button onclick="toggleDarkMode()" class="btn btn-surface">
+          <i class="fa fa-moon-o" id="moon-icon"></i>
+          <i class="fa fa-sun-o" id="sun-icon" style="display: none;"></i>
         </button>
+      </ul>
+
+      <form class="d-flex" action="{% url 'index' %}" method="GET">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+        <button class="btn btn-brand" type="submit">Qidiruv</button>
       </form>
 
-      <!-- Dark toggle -->
-      <button onclick="toggleDarkMode()" class="btn btn-modern-toggle ms-2">
-        <i class="fas fa-moon theme-icon moon-icon" id="moon-icon"></i>
-        <i class="fas fa-sun theme-icon sun-icon" id="sun-icon" style="display: none;"></i>
-      </button>
-
-      <!-- User menu -->
-      <ul class="navbar-nav ms-2">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         {% if request.user.is_authenticated and user_profile %}
-        <li class="nav-item user-profile-chip">
-          <span class="chip chip-glow">
-            <i class="fas fa-bolt me-1"></i>HP {{ user_profile.hp }}
+        <li class="nav-item d-flex align-items-center me-2">
+          <span class="chip chip--brand">
+            <i class="fa fa-bolt"></i> HP {{ user_profile.hp }}
           </span>
         </li>
-        {% endif %}
         {% if user_status %}
-        <li class="nav-item user-status-chip">
-          <span class="chip chip-premium">
-            <i class="fas fa-crown me-1"></i>{{ user_status }} Lv{{ user_level }}
+        <li class="nav-item d-flex align-items-center me-2">
+          <span class="chip">
+            <i class="fa fa-shield"></i> {{ user_status }} | Lv {{ user_level }}
           </span>
         </li>
         {% endif %}
-        {% if request.user.is_authenticated %}
-        <li class="nav-item dropdown user-dropdown">
-          <a class="nav-link dropdown-toggle user-avatar" href="#" data-bs-toggle="dropdown">
-            <i class="fas fa-user-circle"></i>
-          </a>
-          <ul class="dropdown-menu modern-dropdown user-menu">
-            <li><a class="dropdown-item modern-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>Profil</a></li>
-            <li><a class="dropdown-item modern-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Chiqish</a></li>
-          </ul>
+        {% endif %}
+
+        {% if not request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'register' %}"><i class="fa fa-user-plus"></i> Ro'yhatdan o'tish</a>
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link modern-auth-btn" href="{% url 'login' %}">
-            <i class="fas fa-sign-in-alt me-1"></i>Login
-          </a>
+          <a class="nav-link text-white" href="{% url 'profile' %}"><i class="fa fa-user"></i> Hisob</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link modern-auth-btn" href="{% url 'register' %}">
-            <i class="fas fa-user-plus me-1"></i>Ro'yhat
-          </a>
+          <a class="nav-link text-white" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Chiqish</a>
         </li>
         {% endif %}
       </ul>
     </div>
   </div>
 </nav>
-
-<!-- Mobile Offcanvas Menu -->
-<div class="offcanvas offcanvas-start mobile-menu" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
-  <div class="offcanvas-header modern-header">
-    <h5 class="offcanvas-title brand-text fw-bold" id="mobileMenuLabel">
-      <i class="fas fa-play me-2"></i>AniBro
-    </h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body modern-menu-body">
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <a class="nav-link modern-offcanvas-link" href="{% url 'index' %}">
-          <i class="fas fa-home me-3"></i>Bosh Sahifa
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link modern-offcanvas-link" href="{% url 'leaderboard' %}">
-          <i class="fas fa-trophy me-3"></i>Reyting
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link modern-offcanvas-link" href="#genres" data-bs-toggle="collapse">
-          <i class="fas fa-list me-3"></i>Janrlar <i class="fas fa-chevron-down ms-auto"></i>
-        </a>
-        <div class="collapse mt-2" id="genres">
-          {% for movie_type in movie_types %}
-          <a class="nav-link ps-5 modern-genre-link" href="{% url 'type_wise_movie' movie_type.slug %}">
-            {{ movie_type.name }}
-          </a>
-          {% empty %}
-          <div class="ps-5 text-muted small">Janrlar yuklanmoqda...</div>
-          {% endfor %}
-        </div>
-      </li>
-      {% if request.user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link modern-offcanvas-link" href="{% url 'battle_arena' %}">
-          <i class="fas fa-bolt me-3"></i>Battle Arena
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link modern-offcanvas-link" href="{% url 'mortal_kombat_arena' %}">
-          <i class="fas fa-fire me-3"></i>Mortal Kombat
-        </a>
-      </li>
-      {% endif %}
-      <hr class="my-3">
-      <li class="nav-item">
-        <button onclick="toggleDarkMode()" class="btn btn-modern-dark-toggle w-100 mb-2">
-          <i class="fas fa-moon me-2 moon-icon" id="mobile-moon"></i>
-          <i class="fas fa-sun me-2 sun-icon" id="mobile-sun" style="display: none;"></i>
-          Dark Mode
-        </button>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Smooth navbar scroll
-  const links = document.querySelectorAll('.modern-link, .modern-offcanvas-link');
-  links.forEach(link => link.addEventListener('click', e => {
-    e.preventDefault();
-    const href = link.getAttribute('href');
-    if (href) document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  }));
-});
-</script>
