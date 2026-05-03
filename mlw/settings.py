@@ -52,8 +52,7 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'users.User'
 
-MIDDLEWARE = [
-    'django.middleware.cache.UpdateCacheMiddleware',
+middleware_base = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -63,8 +62,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
+
+if REDIS_AVAILABLE:
+    middleware_base = [
+        'django.middleware.cache.UpdateCacheMiddleware',
+    ] + middleware_base + [
+        'django.middleware.cache.FetchFromCacheMiddleware',
+    ]
+
+MIDDLEWARE = middleware_base
 
 ROOT_URLCONF = 'mlw.urls'
 
