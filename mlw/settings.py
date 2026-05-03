@@ -169,9 +169,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Toggle site-wide game availability. Set to False to disable Battle Arena for all users.
 GAME_ENABLED = env.bool("GAME_ENABLED", default=False)
 
-# Redis cache / session configuration (use REDIS_URL env, e.g. Upstash)
-REDIS_URL = env.str('REDIS_URL', default=None)
-REDIS_AVAILABLE = REDIS_URL is not None
+# Redis disabled for prod - use LocMem/DB fallback
+
 
 if REDIS_AVAILABLE:
     CACHES = {
@@ -218,12 +217,11 @@ LOGIN_REDIRECT_URL = '/'
 # Supports RabbitMQ (AMQP) via `CELERY_BROKER_URL` environment variable.
 # Default is local RabbitMQ (guest/guest) for development. In production
 # set `CELERY_BROKER_URL` to e.g. amqp://user:pass@rabbitmq:5672//
-CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', default=None)
-CELERY_BROKER_AVAILABLE = CELERY_BROKER_URL is not None
+CELERY_BROKER_URL = None
 
 # Result backend defaults to Redis (existing `REDIS_URL`). If you prefer
 # use RabbitMQ RPC backend set `CELERY_RESULT_BACKEND` accordingly.
-CELERY_RESULT_BACKEND = REDIS_URL if REDIS_AVAILABLE else None
+CELERY_RESULT_BACKEND = None
 
 # Recommended Celery serialization settings
 CELERY_ACCEPT_CONTENT = ['json']
