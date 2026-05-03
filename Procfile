@@ -1,1 +1,1 @@
-web: gunicorn mlw.asgi:application -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:$PORT
+web: gunicorn mlw.wsgi:application -b 0.0.0.0:$PORT --workers 2
