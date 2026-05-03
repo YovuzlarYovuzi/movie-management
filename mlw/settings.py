@@ -210,4 +210,34 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
+# Production security settings (read from env)
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=env.bool('DEBUG', False) is False)
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=not env.bool('DEBUG', False))
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=not env.bool('DEBUG', False))
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=False)
+SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=False)
+
+# Logging: simple console logger suitable for container/Heroku-like environments
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(levelname)s] %(asctime)s %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': env.str('LOG_LEVEL', default='INFO'),
+    },
+}
+
 
