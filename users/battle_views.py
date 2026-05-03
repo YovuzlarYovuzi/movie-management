@@ -210,7 +210,7 @@ def battle_leaderboard(request):
 @require_GET
 @login_required(login_url="/accounts/login/")
 def battle_multiplayer_demo(request):
-    if not GAME_ENABLED:
+    if not _game_enabled():
         return JsonResponse({"ok": False, "error": "game_disabled", "message": "Battle multiplayer disabled."}, status=410)
 
     return JsonResponse(
@@ -227,7 +227,7 @@ def battle_multiplayer_demo(request):
 def battle_result(request):
     profile = _get_profile(request.user)
     # ban enforcement removed for results
-    if not GAME_ENABLED:
+    if not _game_enabled():
         return JsonResponse({"ok": False, "error": "game_disabled", "message": "Battle multiplayer disabled."}, status=410)
 
     try:
