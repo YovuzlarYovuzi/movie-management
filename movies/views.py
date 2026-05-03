@@ -16,7 +16,7 @@ from hitcount.views import HitCountMixin
 from .tasks  import slow_func
 
 def index(request):
-    slow_func.delay(123438)
+    # slow_func.delay(123438)  # Disabled without broker/result backend
     return HttpResponse("Site working !!")
 
 

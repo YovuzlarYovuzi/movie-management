@@ -163,27 +163,40 @@ MEDIA_ROOT = BASE_DIR / 'media'
 GAME_ENABLED = env.bool("GAME_ENABLED", default=False)
 
 # Redis cache / session configuration (use REDIS_URL env, e.g. Upstash)
-REDIS_URL = env.str('REDIS_URL', default='redis://127.0.0.1:6379/0')
+REDIS_URL = env.str('REDIS_URL', default=None)
+REDIS_AVAILABLE = REDIS_URL is not None
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        # Default timeout for cache entries (seconds). Can be overridden
-        # using the CACHE_TIMEOUT env var.
-        'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
+if REDIS_AVAILABLE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': REDIS_URL,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+            # Default timeout for cache entries (seconds). Can be overridden
+            # using the CACHE_TIMEOUT env var.
+            'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'TIMEOUT': env.int('CACHE_TIMEOUT', default=86400),
+        }
+    }
 
 # Cache middleware settings
 CACHE_MIDDLEWARE_SECONDS = env.int('CACHE_MIDDLEWARE_SECONDS', default=300)
 CACHE_MIDDLEWARE_KEY_PREFIX = env.str('CACHE_MIDDLEWARE_KEY_PREFIX', default='mlw')
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+if REDIS_AVAILABLE:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'default'
+else:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 SESSION_COOKIE_AGE = env.int('SESSION_COOKIE_AGE', default=1209600)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = env.bool('SESSION_EXPIRE_AT_BROWSER_CLOSE', default=False)
 
@@ -198,11 +211,12 @@ LOGIN_REDIRECT_URL = '/'
 # Supports RabbitMQ (AMQP) via `CELERY_BROKER_URL` environment variable.
 # Default is local RabbitMQ (guest/guest) for development. In production
 # set `CELERY_BROKER_URL` to e.g. amqp://user:pass@rabbitmq:5672//
-CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', default='amqp://guest:guest@localhost:5672//')
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', default=None)
+CELERY_BROKER_AVAILABLE = CELERY_BROKER_URL is not None
 
 # Result backend defaults to Redis (existing `REDIS_URL`). If you prefer
 # use RabbitMQ RPC backend set `CELERY_RESULT_BACKEND` accordingly.
-CELERY_RESULT_BACKEND = env.str('CELERY_RESULT_BACKEND', default=REDIS_URL)
+CELERY_RESULT_BACKEND = REDIS_URL if REDIS_AVAILABLE else None
 
 # Recommended Celery serialization settings
 CELERY_ACCEPT_CONTENT = ['json']
