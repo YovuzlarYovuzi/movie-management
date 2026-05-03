@@ -16,5 +16,4 @@ COPY . /app
 # Collect static files
 RUN python manage.py collectstatic --noinput || true
 
-ENV PORT=8080
-CMD ["gunicorn", "mlw.asgi:application", "-k", "uvicorn.workers.UvicornWorker", "-w", "2", "-b", "0.0.0.0:8080"]
+CMD ["gunicorn", "mlw.asgi:application", "-k", "uvicorn.workers.UvicornWorker", "-w", "2", "-b", "0.0.0.0:${PORT:-8000}"]
