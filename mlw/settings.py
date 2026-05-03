@@ -64,7 +64,7 @@ middleware_base = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if REDIS_AVAILABLE:
+if DEBUG:
     middleware_base = [
         'django.middleware.cache.UpdateCacheMiddleware',
     ] + middleware_base + [
@@ -198,7 +198,7 @@ else:
 CACHE_MIDDLEWARE_SECONDS = env.int('CACHE_MIDDLEWARE_SECONDS', default=300)
 CACHE_MIDDLEWARE_KEY_PREFIX = env.str('CACHE_MIDDLEWARE_KEY_PREFIX', default='mlw')
 
-if REDIS_AVAILABLE:
+if DEBUG:
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
     SESSION_CACHE_ALIAS = 'default'
 else:
